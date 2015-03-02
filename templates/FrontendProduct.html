@@ -19,7 +19,7 @@
                 this.changeSkus();
                 $(".skus input[type=radio]:checked").click();
                 this.changeFeatures();
-                $("select.sku-feature:first").change();
+                $(".sku-feature").change();
             },
             changeSkus: function () {
                 $(".skus input[type=radio]").click(function () {
@@ -30,9 +30,9 @@
             },
             changeFeatures: function () {
                 var self = this;
-                $("select.sku-feature").change(function () {
+                $(".sku-feature").change(function () {
                     var key = "";
-                    $("select.sku-feature").each(function () {
+                    $(".sku-feature").each(function () {
                         key += $(this).data('feature-id') + ':' + $(this).val() + ';';
                     });
                     var sku = self.options.features[key];
@@ -47,9 +47,9 @@
 
     $(function () {
         $.qdiscount_plugin.init({
-            {if $product.sku_type}
-                features: {json_encode($sku_features_selectable)}
-            {/if}
+        {if $product.sku_type}
+            features: {json_encode($sku_features_selectable)}
+        {/if}
         });
     });
 </script>
