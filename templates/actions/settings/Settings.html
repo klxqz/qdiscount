@@ -7,8 +7,24 @@
         overflow-y: hidden;
         overflow-x: auto;
     }
+    .plugin-menu{
+        float: right;
+        list-style: none;
+    }
+    .plugin-menu li{
+        float: left;
+        margin-left: 10px;
+    }
+    .plugin-menu li a{
+        text-decoration: underline;
+    }
 </style>
-<h1>Скидка от количеста</h1>
+<h1>Скидка от количества</h1>
+
+<ul class="plugin-menu">
+    <li><a href="mailto:support@wa-plugins.ru"><i class="icon16 ss pt hammer"></i>Поддержка</a></li>
+</ul>
+
 <div class="fields form">
     <form action="?plugin=qdiscount&action=saveSettings" method="post" id="plugins-settings-form">
         {$wa->csrf()}
@@ -17,30 +33,27 @@
                 <div class="name">
                     Статус плагина
                 </div>
-                <div class="value">
-                    <select name="shop_qdiscount[status]">
-                        <option {if $settings.status == 1} selected="selected"{/if} value="1">Включен</option>
-                        <option {if $settings.status == 0} selected="selected"{/if} value="0">Выключен</option>
-                    </select>
+                <div class="value no-shift s-ibutton-checkbox">
+                    <input type="hidden" name="shop_qdiscount[status]" value="0">
+                    <input type="checkbox" id="ibutton-status" name="shop_qdiscount[status]" value="1"{if $settings.status} checked{/if}>
                 </div>
             </div>
         </div>
 
 
-        <div class="field-group">
+        <div class="field-group"{if !$settings.status} style="display:none;"{/if}>
             <div class="field">
                 <div class="name">
                     Вывод информации о скидке в карточке товара
                 </div>
-                <div class="value">
-                    <select name="shop_qdiscount[frontend_product]">
-                        <option {if $settings.frontend_product == 1} selected="selected"{/if} value="1">Включен</option>
-                        <option {if $settings.frontend_product == 0} selected="selected"{/if} value="0">Выключен</option>
-                    </select> или используйте хелпер вывода {literal}{shopQdiscountPlugin::display($product)}{/literal}
+                <div class="value no-shift s-ibutton-checkbox">
+                    <input type="hidden" name="shop_qdiscount[frontend_product]" value="0">
+                    <input type="checkbox" class="ibutton-status" name="shop_qdiscount[frontend_product]" value="1"{if $settings.frontend_product} checked{/if}>
+                    <p class="hint">Для размещения плагина в произовльном месте используйте хелпер вывода {literal}{shopQdiscountPlugin::display($product)}{/literal}</p>
                 </div>
             </div>
 
-            <div class="field">
+            <div class="field"{if !$settings.frontend_product} style="display:none;"{/if}>
                 <div class="name">
                     Место вывода
                 </div>
@@ -55,40 +68,65 @@
         </div>
 
 
-
-        {foreach from=$templates key=key item=template}
-            <div class="field">
-                <div class="name">{$template.name}<br /><span class="hint">HTML + Smarty</span></div>
-                <div class="value no-shift">
-                    <div id="s-editor-core-wrapper">
-                        <textarea id="sf-template-{$key}"  class="body" name="templates[{$key}]">{$template.template|escape}</textarea>
+        <div class="field-group"{if !$settings.status} style="display:none;"{/if}>
+            {foreach from=$templates key=key item=template}
+                <div class="field">
+                    <div class="name">{$template.name}<br /><span class="hint">HTML + Smarty</span></div>
+                    <div class="value no-shift">
+                        <div id="s-editor-core-wrapper">
+                            <textarea id="sf-template-{$key}"  class="body" name="templates[{$key}]">{$template.template|escape}</textarea>
+                        </div>
                     </div>
+
+                    {if $template.change_tpl}
+                        <div class="value">
+                            <p class="gray"><i class="icon16 exclamation"></i>Внимание! Шаблон по умолчанию был изменен</p>
+                            <input type="checkbox" name="reset_tpls[{$key}]" value="1"  /> - Сбросить изменения, использовать шаблон по умолчанию
+                        </div>
+                    {/if}
                 </div>
+            {/foreach}
 
-                {if $template.change_tpl}
-                    <div class="value">
-                        <p class="gray"><i class="icon16 exclamation"></i>Внимание! Шаблон по умолчанию был изменен</p>
-                        <input type="checkbox" name="reset_tpls[{$key}]" value="1"  /> - Сбросить изменения, использовать шаблон по умолчанию
-                    </div>
-                {/if}
-            </div>
-        {/foreach}
-
-
-
-        <div class="field">
-            <div class="value submit">
-                <input type="submit" class="button green" value="Сохранить">
-                <span id="plugins-settings-form-status" style="display:none">
-                    <i style="vertical-align:middle" class="icon16 yes"></i> [`Saved`]
-                </span>
+            <div class="field">
+                <div class="value submit">
+                    <input type="submit" class="button green" value="Сохранить">
+                    <span id="plugins-settings-form-status" style="display:none">
+                        <i style="vertical-align:middle" class="icon16 yes"></i> [`Saved`]
+                    </span>
+                </div>
             </div>
         </div>
     </form>
 </div>
 
 <script type="text/javascript">
-    $(function() {
+    $(function () {
+        $('#ibutton-status').iButton({
+            labelOn: "", labelOff: "", className: 'mini'
+        }).change(function () {
+            var self = $(this);
+            var enabled = self.is(':checked');
+            if (enabled) {
+                self.closest('.field-group').siblings().show(200);
+            } else {
+                self.closest('.field-group').siblings().hide(200);
+            }
+            var f = $("#plugins-settings-form");
+            $.post(f.attr('action'), f.serialize());
+        });
+        $('.ibutton-status').iButton({
+            labelOn: "", labelOff: "", className: 'mini'
+        }).change(function () {
+            var self = $(this);
+            var enabled = self.is(':checked');
+            if (enabled) {
+                self.closest('.field').siblings().show(200);
+            } else {
+                self.closest('.field').siblings().hide(200);
+            }
+            var f = $("#plugins-settings-form");
+            $.post(f.attr('action'), f.serialize());
+        });
 
         var ids = ["sf-template-FrontendProduct"];
         for (var i = 0; i < ids.length; i++) {
@@ -99,17 +137,17 @@
                 height: "dynamic",
                 lineWrapping: true
             });
-            $(ids[i]).change(function() {
+            $(ids[i]).change(function () {
                 c.setValue($(this).val())
             });
-            $(ids[i]).submit(function() {
+            $(ids[i]).submit(function () {
                 var f = $(this);
-                $.post(f.attr('action'), f.serialize(), function(response) {
+                $.post(f.attr('action'), f.serialize(), function (response) {
                     if (response.status == 'ok') {
                         $('#wa-design-button').removeClass('red').addClass('green');
                         $("#wa-editor-status-fail").hide()
                         $("#wa-editor-status-ok span").html(response.data.message);
-                        $("#wa-editor-status-ok").fadeIn('slow', function() {
+                        $("#wa-editor-status-ok").fadeIn('slow', function () {
                             $(this).fadeOut(1000);
                         });
                     } else {

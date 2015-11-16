@@ -27,6 +27,10 @@ class shopQdiscountPlugin extends shopPlugin {
                     ->order('sku_id ASC, count ASC')
                     ->fetchAll();
             if ($items) {
+                foreach ($items as &$item) {
+                    $item['price'] = (float) shop_currency($item['price'], $product['currency'], null, false);
+                }
+                unset($item);
                 $view = wa()->getView();
                 $view->assign('items', $items);
                 $view->assign('product', $product);
@@ -54,7 +58,7 @@ class shopQdiscountPlugin extends shopPlugin {
                             ->order('count DESC')
                             ->fetch();
                     if ($qdiscount) {
-                        $discount += $item['quantity'] * ($item['price'] - $qdiscount['price']);
+                        $discount += $item['quantity'] * ($item['price'] - (float) shop_currency($qdiscount['price'], $item['product']['currency'], null, false));
                     }
                 }
             }

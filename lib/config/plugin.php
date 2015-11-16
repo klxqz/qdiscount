@@ -1,10 +1,10 @@
 <?php
 
 return array(
-    'name' => 'Скидка от количеста',
+    'name' => 'Скидка от количества',
     'description' => 'Стоимость определяется количеством купленного товара',
     'vendor' => '985310',
-    'version' => '1.0.0',
+    'version' => '1.0.1',
     'img' => 'img/qdiscount.png',
     'frontend' => true,
     'shop_settings' => true,
