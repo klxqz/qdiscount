@@ -1,5 +1,6 @@
 <style>
     .qdiscount-product-block{
+        margin: 10px 0;
         overflow: auto; display: block;
     }
     .qdiscount-product-block table{
@@ -23,8 +24,8 @@
     <table>
         {foreach $product.skus as $sku}
             {foreach $items as $item}
-                <tr class="qdiscount-item" data-sku-id="{$sku.id}">
-                    {if $sku.id == $item.sku_id}
+                {if $sku.id == $item.sku_id}
+                    <tr class="qdiscount-item" data-sku-id="{$sku.id}">
                         <td class="nowrap"><input class="qdiscount-variant" type="radio" name="qdiscount_variant" value="{$item.count}" /></td>
                         <td class="nowrap">
                             <div class="new-price">{shop_currency($item.price)}</div>
@@ -38,13 +39,12 @@
                             <div class="new-price">{shop_currency($item.count*$item.price)}</div>
                             <div class="old-price">{shop_currency($item.count*$sku.price)}</div>
                         </td>
-                    {/if}
-                </tr>
+                    </tr>
+                {/if}
             {/foreach}
-
         {/foreach}
     </table>
-    <em>Цена со скидкой при покупке указанного количесва</em>
+    <em class="qdiscount-hint">Цена со скидкой при покупке указанного количества</em>
 </div>
 
 <script type="text/javascript">
@@ -62,8 +62,12 @@
             changeSkus: function () {
                 $(".skus input[type=radio]").click(function () {
                     var sku_id = $(this).val();
+                    $('.qdiscount-hint').hide();
                     $('.qdiscount-item').hide();
                     $('.qdiscount-item[data-sku-id=' + sku_id + ']').show();
+                    if ($('.qdiscount-item:visible').length > 0) {
+                        $('.qdiscount-hint').show();
+                    }
                 });
             },
             changeFeatures: function () {
@@ -75,20 +79,36 @@
                     });
                     var sku = self.options.features[key];
                     if (sku) {
+                        $('.qdiscount-hint').hide();
                         $('.qdiscount-item').hide();
                         $('.qdiscount-item[data-sku-id=' + sku.id + ']').show();
+                        if ($('.qdiscount-item:visible').length > 0) {
+                            $('.qdiscount-hint').show();
+                        }
                     }
                 });
             },
             changeDiscountVariant: function () {
                 var form = $(this.options.form_selector);
-                $('.qdiscount-variant').change(function () {
+                $('.qdiscount-variant').click(function () {
+                    if (!$(this).data('checked')) {
+                        $('.qdiscount-variant').data('checked', false);
+                        $(this).attr('checked', true);
+                        $(this).data('checked', true);
+                    } else {
+                        $(this).removeAttr('checked');
+                        $(this).data('checked', false);
+                    }
+
                     if (!form.find('input[name=quantity]').length) {
                         form.append('<input type="hidden" name="quantity" value="1" />');
                     }
-                    form.find('input[name=quantity]').val($(this).val());
+                    if ($(this).data('checked')) {
+                        form.find('input[name=quantity]').val($(this).val());
+                    } else {
+                        form.find('input[name=quantity]').val(1);
+                    }
                 });
-                $(".qdiscount-variant:first").click();
             }
         };
     })(jQuery);
