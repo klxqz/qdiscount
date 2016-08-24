@@ -11,13 +11,17 @@ class shopQdiscountPluginBackendAction extends waViewAction {
             throw new waException(_w("Unknown product"));
         }
         $p = new shopProduct($product);
-        $this->view->assign('product', $p);
 
         $qdiscount_model = new shopQdiscountPluginModel();
         $items = $qdiscount_model->where('product_id = ' . (int) $id)
                 ->order('sku_id ASC, count ASC')
                 ->fetchAll();
-        $this->view->assign('items', $items);
+
+        $this->view->assign(array(
+            'product' => $p,
+            'items' => $items,
+            'route_hashs' => shopQdiscountHelper::getRouteHashs()
+        ));
     }
 
 }

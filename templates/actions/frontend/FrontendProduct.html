@@ -1,0 +1,104 @@
+<style>
+    .qdiscount-product-block{
+        overflow: auto; display: block;
+    }
+    .qdiscount-product-block table{
+        border: none !important;
+    }
+    .qdiscount-product-block table td{
+        border: none !important; padding: 0 !important;
+    }
+    .qdiscount-product-block .qdiscount-variant{
+        margin-right: 5px;
+    }
+    .qdiscount-product-block .old-price{
+        text-decoration: line-through; font-size: 75%; color: #777;
+    }
+    .qdiscount-product-block .new-price{
+        font-size: 120%; font-weight: bold; color: #ff0000;
+    }
+</style>
+
+<div class="qdiscount-product-block">
+    <table>
+        {foreach $product.skus as $sku}
+            {foreach $items as $item}
+                <tr class="qdiscount-item" data-sku-id="{$sku.id}">
+                    {if $sku.id == $item.sku_id}
+                        <td class="nowrap"><input class="qdiscount-variant" type="radio" name="qdiscount_variant" value="{$item.count}" /></td>
+                        <td class="nowrap">
+                            <div class="new-price">{shop_currency($item.price)}</div>
+                            <div class="old-price">{shop_currency($sku.price)}</div>
+                        </td>
+                        <td class="nowrap">&nbsp;<span class="gray">×</span><input size="1" type="text" value="{$item.count}" disabled="disabled" /></td>
+                        <td>
+                            &nbsp;=&nbsp;
+                        </td>
+                        <td class="nowrap">
+                            <div class="new-price">{shop_currency($item.count*$item.price)}</div>
+                            <div class="old-price">{shop_currency($item.count*$sku.price)}</div>
+                        </td>
+                    {/if}
+                </tr>
+            {/foreach}
+
+        {/foreach}
+    </table>
+    <em>Цена со скидкой при покупке указанного количесва</em>
+</div>
+
+<script type="text/javascript">
+    (function ($) {
+        $.qdiscount_plugin = {
+            options: {},
+            init: function (options) {
+                this.options = options;
+                this.changeSkus();
+                $(".skus input[type=radio]:checked").click();
+                this.changeFeatures();
+                $(".sku-feature").change();
+                this.changeDiscountVariant();
+            },
+            changeSkus: function () {
+                $(".skus input[type=radio]").click(function () {
+                    var sku_id = $(this).val();
+                    $('.qdiscount-item').hide();
+                    $('.qdiscount-item[data-sku-id=' + sku_id + ']').show();
+                });
+            },
+            changeFeatures: function () {
+                var self = this;
+                $(".sku-feature").change(function () {
+                    var key = "";
+                    $(".sku-feature").each(function () {
+                        key += $(this).data('feature-id') + ':' + $(this).val() + ';';
+                    });
+                    var sku = self.options.features[key];
+                    if (sku) {
+                        $('.qdiscount-item').hide();
+                        $('.qdiscount-item[data-sku-id=' + sku.id + ']').show();
+                    }
+                });
+            },
+            changeDiscountVariant: function () {
+                var form = $(this.options.form_selector);
+                $('.qdiscount-variant').change(function () {
+                    if (!form.find('input[name=quantity]').length) {
+                        form.append('<input type="hidden" name="quantity" value="1" />');
+                    }
+                    form.find('input[name=quantity]').val($(this).val());
+                });
+                $(".qdiscount-variant:first").click();
+            }
+        };
+    })(jQuery);
+
+    $(function () {
+        $.qdiscount_plugin.init({
+    {if $product.sku_type}
+        features: {json_encode($sku_features_selectable)},
+    {/if}
+        form_selector: '#cart-form'
+    });
+    });
+</script>

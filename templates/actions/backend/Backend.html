@@ -22,14 +22,25 @@
             <div class="value">
                 <table id="qdiscount-table" class="zebra" style="width: auto;">
                     <thead>
-                    <th>Артикул</th>
-                    <th>Количество</th>
-                    <th>Стоимость</th>
-                    <th>Удалить</th>
+                        <tr>  
+                            <th>Поселение</th>
+                            <th>Артикул</th>
+                            <th>Количество</th>
+                            <th>Стоимость</th>
+                            <th>Удалить</th>
+                        </tr>
                     </thead>
                     <tbody>
                         {foreach $items as $item}
                             <tr>
+                                <td>
+                                    <select name="qdiscount_route_hash[]">
+                                        <option value="0">Общие настройки для всех поселений</option>
+                                        {foreach $route_hashs as $route_url => $route_hash}
+                                            <option value="{$route_hash}"{if $route_hash == $item.route_hash|default:'0'} selected="selected"{/if}>{$route_url}</option>
+                                        {/foreach}
+                                    </select>
+                                </td>
                                 <td class="min-width">
                                     <input type="hidden" name="qdiscount_id[]" value="{$item.id}" />
                                     <select name="qdiscount_sku[]">
@@ -39,10 +50,10 @@
                                     </select>
                                 </td>
                                 <td class="min-width">
-                                    <input type="text" value="{$item.count}" class="large bold" name="qdiscount_count[]">
+                                    <input type="text" value="{$item.count|escape}" class="large bold" name="qdiscount_count[]">
                                 </td>
                                 <td>
-                                    <input type="text" value="{$item.price}" class="large bold" name="qdiscount_price[]">
+                                    <input type="text" value="{(float)$item.price|escape}" class="large bold" name="qdiscount_price[]">
                                     <span class="large bold overhanging">
                                         {$product.currency}
                                     </span>
@@ -69,6 +80,14 @@
     <script id="qdiscount-tmpl" type="text/x-jquery-tmpl">
         <tr>
         <td class="min-width">
+        <select name="qdiscount_route_hash[]">
+        <option value="0">Общие настройки для всех поселений</option>
+        {{each route_hashs}}
+        <option value="${$value}">${$index}</option>
+        {{/each}}
+        </select>
+        </td>
+        <td class="min-width">
         <input type="hidden" name="qdiscount_id[]" value="" />
         <select name="qdiscount_sku[]">
         {{each skus}}
@@ -93,10 +112,11 @@
 {/literal}
 <script type="text/javascript">
     $.product_qdiscount.init({
-    container: '.s-product-form.qdiscount',
-    counter: '#s-product-edit-menu li.qdiscount span.hint',
-    product_id: {$product.id},
-    currency: '{$product.currency}',
-    skus: {json_encode($product.skus)}
+        container: '.s-product-form.qdiscount',
+        counter: '#s-product-edit-menu li.qdiscount span.hint',
+        product_id: {$product.id},
+        currency: '{$product.currency}',
+        skus: {json_encode($product.skus)},
+        route_hashs: {json_encode($route_hashs)}
     });
 </script>
