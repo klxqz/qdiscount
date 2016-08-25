@@ -112,11 +112,8 @@ class shopQdiscountPlugin extends shopPlugin {
             $view->assign('items', $items);
             $view->assign('product', $product);
 
-            $template_path = wa()->getDataPath('plugins/qdiscount/templates/actions/frontend/FrontendProduct.html', false, 'shop', true);
-            if (!file_exists($template_path)) {
-                $template_path = wa()->getAppPath('plugins/qdiscount/templates/actions/frontend/FrontendProduct.html', 'shop');
-            }
-            $html = $view->fetch($template_path);
+            $template = shopQdiscountHelper::getRouteTemplates($route_hash, 'FrontendProduct');
+            $html = $view->fetch('string:' . $template['template']);
             return $html;
         }
     }
