@@ -104,8 +104,9 @@ class shopQdiscountPlugin extends shopPlugin {
                 ->fetchAll();
 
         if ($items) {
+            $currency = wa('shop')->getConfig()->getCurrency(true);
             foreach ($items as &$item) {
-                $item['price'] = (float) shop_currency($item['price'], $product['currency'], null, false);
+                $item['price'] = (float) shop_currency($item['price'], $product['unconverted_currency'], $currency, false);
             }
             unset($item);
             $view = wa()->getView();
