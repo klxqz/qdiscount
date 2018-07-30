@@ -145,7 +145,7 @@ class shopQdiscountPlugin extends shopPlugin {
                         ->fetch();
                 if ($qdiscount) {
                     $discount['items'][$item_id] = array(
-                        'discount' => $item['quantity'] * ($item['price'] - (float) shop_currency($qdiscount['price'], $item['product']['currency'], null, false)),
+                        'discount' => $item['quantity'] * ($item['price'] - (float) shop_currency($qdiscount['price'], $item['product']['unconverted_currency'], null, false)),
                         'description' => "Скидка от плагина  «Скидка от количества»",
                     );
                 }
