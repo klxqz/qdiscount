@@ -1,0 +1,48 @@
+<div class="qdiscount-product-block">
+    <table>
+        {foreach $qdiscounts as $qdiscount}
+            <tr class="qdiscount-item" data-sku-id="{$qdiscount.sku_id}" data-count="{$qdiscount.count}" data-new-price="{shop_currency($qdiscount.price, null, null, false)}" data-old-price="" data-compare-price="" style="display: none;">
+                <td class="nowrap"><input class="qdiscount-variant" type="radio" name="qdiscount_variant" value="{$qdiscount.count}" autocomplete="off" /></td>
+                <td class="nowrap">
+                    <div class="new-price">
+                        {if $html_currency}
+                            {shop_currency_html($qdiscount.price)}
+                        {else}
+                            {shop_currency($qdiscount.price)}
+                        {/if}
+                    </div>
+                    <div class="old-price"></div>
+                </td>
+                <td class="nowrap">&nbsp;<span class="gray">&times;</span><input size="1" type="text" value="{$qdiscount.count}" disabled="disabled" /></td>
+                <td>
+                    &nbsp;=&nbsp;
+                </td>
+                <td class="nowrap">
+                    <div class="new-price">
+                        {if $html_currency}
+                            {shop_currency_html($qdiscount.count * $qdiscount.price)}
+                        {else}
+                            {shop_currency($qdiscount.count * $qdiscount.price)}
+                        {/if}
+                    </div>
+                    <div class="old-price total-old-price"></div>
+                </td>
+            </tr>
+        {/foreach}
+    </table>
+    <em class="qdiscount-hint">Цена со скидкой при покупке указанного количества</em>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $.qdiscount_plugin.init({
+            currency: {json_encode($currency_info)},
+            skus: {json_encode($product.skus)},
+            features: {json_encode($sku_features_selectable|default:[])},
+            form_selector: '{$product_form_selector}',
+            product_price_selector: '{$product_price_selector}',
+            product_compare_price_selector: '{$product_compare_price_selector}',
+            html_currency: {$html_currency}
+        });
+    });
+</script>

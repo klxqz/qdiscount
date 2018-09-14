@@ -1,0 +1,25 @@
+<div>
+    <div class="dialog-background"></div>
+    <form id="qdiscount-form" action="?plugin=qdiscount&action=save">
+        {$wa->csrf()}
+        <div class="dialog-window">
+            <div class="dialog-content">
+                <div class="dialog-content-indent">
+                    <h1>Задать скидку от количества</h1>
+                    {include file="./Backend.html"}
+                </div>
+            </div>
+            <div class="dialog-buttons">
+                <div class="dialog-buttons-gradient">
+                    <input type="submit" value="Сохранить" class="button green">
+                    <a class="cancel" href="#">Отмена</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript" src="{$wa_app_static_url}plugins/qdiscount/js/backend/dialog.js"></script>
+<script type="text/javascript">
+    $.dialog_qdiscount.init();
+</script>

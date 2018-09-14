@@ -7,20 +7,18 @@ class shopQdiscountPluginBackendAction extends waViewAction {
 
         $product_model = new shopProductModel();
         $product = $product_model->getById($id);
-        if (!$product) {
-            throw new waException(_w("Unknown product"));
-        }
-        $p = new shopProduct($product);
 
         $qdiscount_model = new shopQdiscountPluginModel();
         $items = $qdiscount_model->where('product_id = ' . (int) $id)
                 ->order('sku_id ASC, count ASC')
                 ->fetchAll();
 
+        $currency_model = new shopCurrencyModel();
         $this->view->assign(array(
-            'product' => $p,
+            'currencies' => $currency_model->getCurrencies(),
+            'product' => $product ? new shopProduct($id) : null,
             'items' => $items,
-            'route_hashs' => shopQdiscountHelper::getRouteHashs()
+            'route_hashs' => shopQdiscountRouteHelper::getRouteHashs()
         ));
     }
 

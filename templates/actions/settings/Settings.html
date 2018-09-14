@@ -40,17 +40,26 @@
     .inline-block{
         display: inline-block;
     }
+    .field-group.fixed{
+        width: calc(100% - 253px);
+        position: fixed;
+        background: #fff;
+        z-index: 99;
+        margin: 0;
+        bottom: 0;
+    }
 </style>
 <div>
-    <h1 class="inline-block">Скидка от количества</h1>
+    {$settings = $plugin->getSettings()}
+    <h1>{$plugin->getName()}</h1>
 
     <ul class="plugin-menu">
-        <li><a href="mailto:support@wa-plugins.ru"><i class="icon16 ss pt hammer"></i>Поддержка разработчика плагина</a></li>
+        <li><a href="http://support.wa-plugins.ru/"><i class="icon16 ss pt hammer"></i>Поддержка</a></li>
     </ul>
 </div>
 
 <div class="fields form">
-    <form action="?module=plugins&id=qdiscount&action=save" method="post" id="plugins-settings-form_">
+    <form action="?module=plugins&id=qdiscount&action=save" method="post" id="plugins-settings-form">
         {$wa->csrf()}
         <div class="field-group">
             <div class="field">
@@ -87,7 +96,7 @@
             </div>
         </div>
 
-        <div class="field-group"{if !$settings.status} style="display:none;"{/if}>
+        <div class="field-group submit"{if !$settings.status|default:0} style="display:none"{/if}>
             <div class="field">
                 <div class="value submit">
                     <input type="submit" class="button green" value="Сохранить">
@@ -103,13 +112,17 @@
 
 {$tpls = []}
 {foreach $templates as $key => $template}
-    {$count = array_push($tpls, "'sf-template-`$key`'")}
+    {$mode = $template.tpl_ext}
+    {if $template.tpl_ext == 'js'}
+        {$mode = 'javascript'}
+    {/if}
+    {$tpls[] = ['id' => "sf-template-`$key`", 'mode' => $mode]}
 {/foreach}
-<script type="text/javascript" src="{$wa_app_static_url}plugins/qdiscount/js/settings.js?{$wa->version()}"></script>
+<script type="text/javascript" src="{$wa_app_static_url}plugins/qdiscount/js/settings/settings.js?{$plugin->getVersion()}"></script>
 <script type="text/javascript">
     $(function () {
         $.qdiscount_settings.init({
-            ids: [{implode(',', $tpls)}]
+            templates: {json_encode($tpls)}
         });
     });
 </script>

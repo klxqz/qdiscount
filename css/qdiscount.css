@@ -1,0 +1,19 @@
+.qdiscount-product-block{
+    margin: 10px 0;
+    overflow: auto; display: block;
+}
+.qdiscount-product-block table{
+    border: none !important;
+}
+.qdiscount-product-block table td{
+    border: none !important; padding: 0 !important;
+}
+.qdiscount-product-block .qdiscount-variant{
+    margin-right: 5px;
+}
+.qdiscount-product-block .old-price{
+    text-decoration: line-through; font-size: 75%; color: #777;
+}
+.qdiscount-product-block .new-price{
+    font-size: 120%; font-weight: bold; color: #ff0000;
+}
