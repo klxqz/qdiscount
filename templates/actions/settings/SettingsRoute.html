@@ -6,6 +6,7 @@
         <div class="value no-shift s-ibutton-checkbox">
             <input type="hidden" name="route_settings[status]" value="0">
             <input type="checkbox" class="ibutton" name="route_settings[status]" value="1"{if $route_settings.status|default:0} checked{/if}>
+            <p class="hint">Включение/отключение плагина для выбранного поселения</p>
         </div>
     </div>
 </div>
@@ -39,7 +40,7 @@
                     {/literal}
             </div>
             <p class="hint">
-                Код хелпера-вывода для вставки в шаблон <strong>product.html</strong>, чтобы выполнить размещение блока «Скидка от количества» в произвольном месте
+                Код хелпера-вывода для вставки в шаблон <strong>product.html</strong> или <strong>product.cart.html</strong>, чтобы выполнить размещение блока «Скидка от количества» в произвольном месте
             </p>
         </div>
     </div>
@@ -49,6 +50,7 @@
         </div>
         <div class="value">
             <input class="long" name="route_settings[product_form_selector]" value="{$route_settings.product_form_selector|default:'form#cart-form'|escape}" />
+            <p class="hint">Данный селектор необходим для изменения количества товара в поле выбора. <a target="_blank" href="http://jquery.page2page.ru/index.php5/%D0%A1%D0%B5%D0%BB%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D1%8B">Что такое селекторы?</a></p>
         </div>
     </div>
     <div class="field">
@@ -56,7 +58,8 @@
             Селектор цены товара
         </div>
         <div class="value">
-            <input class="long" name="route_settings[product_price_selector]" value="{$route_settings.product_price_selector|default:'form#cart-form .add2cart .price'|escape}" />
+            <input class="long" name="route_settings[product_price_selector]" value="{$route_settings.product_price_selector|default:'form#cart-form .price'|escape}" />
+            <p class="hint">Данный селектор необходим для изменения цены товара. <a target="_blank" href="http://jquery.page2page.ru/index.php5/%D0%A1%D0%B5%D0%BB%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D1%8B">Что такое селекторы?</a></p>
         </div>
     </div>
     <div class="field">
@@ -64,7 +67,8 @@
             Селектор зачеркнутой цены товара
         </div>
         <div class="value">
-            <input class="long" name="route_settings[product_compare_price_selector]" value="{$route_settings.product_compare_price_selector|default:'form#cart-form .add2cart .compare-at-price'|escape}" />
+            <input class="long" name="route_settings[product_compare_price_selector]" value="{$route_settings.product_compare_price_selector|default:'form#cart-form .compare-at-price'|escape}" />
+            <p class="hint">Данный селектор необходим для изменения зачеркнутой цены товара. <a target="_blank" href="http://jquery.page2page.ru/index.php5/%D0%A1%D0%B5%D0%BB%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D1%8B">Что такое селекторы?</a></p>
         </div>
     </div>
     <div class="field">
@@ -75,7 +79,7 @@
             <input type="hidden" name="route_settings[html_currency]" value="0" />
             <input class="ibutton" type="checkbox"{if $route_settings.html_currency|default:1} checked="checked"{/if} name="route_settings[html_currency]" value="1" />
             <p class="hint">
-                {shop_currency_html(1)} или {shop_currency(1)}
+                {shop_currency_html(1, 'RUB', 'RUB')} или {shop_currency(1, 'RUB', 'RUB')}
             </p>
         </div>
     </div>
@@ -88,6 +92,18 @@
             <input class="ibutton" type="checkbox"{if $route_settings.price_replace|default:1} checked="checked"{/if} name="route_settings[price_replace]" value="1" />
             <p class="hint">
                 Вместо назначения скидки в корзине, устанавливать новую цену с учетом скидки
+            </p>
+        </div>
+    </div>
+    <div class="field">
+        <div class="name">
+            Подключать скрипты планина на всех страницах
+        </div>
+        <div class="value no-shift s-ibutton-checkbox">
+            <input type="hidden" name="route_settings[head_include]" value="0" />
+            <input class="ibutton" type="checkbox"{if $route_settings.head_include|default:0} checked="checked"{/if} name="route_settings[head_include]" value="1" />
+            <p class="hint">
+                Без включения данной опции скрипты плагина доступны только на странице товара и, например, на страницах категории, в быстром просмотре плагин работать не сможет.
             </p>
         </div>
     </div>

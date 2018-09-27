@@ -139,16 +139,30 @@ HTML;
         return array('edit_section_li' => $html);
     }
 
+    public function frontendHead() {
+        if (!($route_settings = self::isEnabled($route_hash))) {
+            return;
+        }
+        if (!empty($route_settings['head_include'])) {
+            $qdiscount_js_url = shopQdiscountRouteHelper::getRouteTemplateUrl('qdiscount_js', $route_hash) . '?' . $this->getVersion();
+            $qdiscount_css_url = shopQdiscountRouteHelper::getRouteTemplateUrl('qdiscount_css', $route_hash) . '?' . $this->getVersion();
+
+            wa()->getResponse()->addJs(ltrim($qdiscount_js_url, '/'));
+            wa()->getResponse()->addCss(ltrim($qdiscount_css_url, '/'));
+        }
+    }
+
     public function frontendProduct($product) {
         if (!($route_settings = self::isEnabled($route_hash))) {
             return;
         }
+        if (empty($route_settings['head_include'])) {
+            $qdiscount_js_url = shopQdiscountRouteHelper::getRouteTemplateUrl('qdiscount_js', $route_hash) . '?' . $this->getVersion();
+            $qdiscount_css_url = shopQdiscountRouteHelper::getRouteTemplateUrl('qdiscount_css', $route_hash) . '?' . $this->getVersion();
 
-        $qdiscount_js_url = shopQdiscountRouteHelper::getRouteTemplateUrl('qdiscount_js', $route_hash) . '?' . $this->getVersion();
-        $qdiscount_css_url = shopQdiscountRouteHelper::getRouteTemplateUrl('qdiscount_css', $route_hash) . '?' . $this->getVersion();
-
-        waSystem::getInstance()->getResponse()->addJs(ltrim($qdiscount_js_url, '/'));
-        waSystem::getInstance()->getResponse()->addCss(ltrim($qdiscount_css_url, '/'));
+            wa()->getResponse()->addJs(ltrim($qdiscount_js_url, '/'));
+            wa()->getResponse()->addCss(ltrim($qdiscount_css_url, '/'));
+        }
 
         if ($route_settings['frontend_product_output']) {
             return array($route_settings['frontend_product_output'] => self::display($product));
@@ -397,7 +411,7 @@ HTML;
                     } elseif ($qdiscount['type'] == 'percent') {
                         $price_value = $sku['price'] - $sku['price'] * ($qdiscount['price'] / 100);
                     }
- 
+
                     if ($price_value > 0) {
                         $price_value = self::shop_currency($price_value, $product['currency'], $frontend_currency, false);
                         $price_value = shopRounding::roundCurrency($price_value, $frontend_currency);

@@ -35,14 +35,21 @@
 
 <script type="text/javascript">
     $(function () {
-        $.qdiscount_plugin.init({
-            currency: {json_encode($currency_info)},
-            skus: {json_encode($product.skus)},
-            features: {json_encode($sku_features_selectable|default:[])},
-            form_selector: '{$product_form_selector}',
-            product_price_selector: '{$product_price_selector}',
-            product_compare_price_selector: '{$product_compare_price_selector}',
-            html_currency: {$html_currency}
+        $(document).ready(function () {
+            if ($.styler) {
+                setTimeout(function () {
+                    $('.qdiscount-product-block input[type=radio]').styler('destroy');
+                }, 100);
+            }
+            $.qdiscount_plugin.init({
+                currency: {json_encode($currency_info)},
+                skus: {json_encode($product.skus)},
+                features: {json_encode($sku_features_selectable|default:[])},
+                form_selector: '{$product_form_selector}',
+                product_price_selector: '{$product_price_selector}',
+                product_compare_price_selector: '{$product_compare_price_selector}',
+                html_currency: {$html_currency}
+            });
         });
     });
 </script>
