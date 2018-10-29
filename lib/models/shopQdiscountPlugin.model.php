@@ -12,6 +12,10 @@ class shopQdiscountPluginModel extends waModel {
             }
         }
 
+        if (empty($where)) {
+            return false;
+        }
+        
         $sql = "SELECT 
                 *, 
                 CONCAT(`product_id`, '_', `sku_id`) as `id`,
